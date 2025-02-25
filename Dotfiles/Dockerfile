@@ -5,7 +5,7 @@ ENV TZ="America/New_York"
 
 RUN apt-get update
 
-# misc software installs
+# misc. software installs
 RUN apt-get install \
     tzdata
 
@@ -17,6 +17,9 @@ RUN apt-get install \
     stow
 
 # base of my environment
+# tmux
+# neovim
+# starship
 RUN apt-get install -y \
     tmux neovim
 
