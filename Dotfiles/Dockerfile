@@ -25,7 +25,7 @@ RUN apt-get install -y \
 
 RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
 
-ARG USERNAME=beesho
+ARG USERNAME=bashar-dot
 
 RUN useradd -ms /bin/bash $USERNAME
 
