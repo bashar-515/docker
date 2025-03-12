@@ -1,6 +1,6 @@
 FROM ubuntu:latest AS builder
 
-ARG USERNAME=bashar-dot
+ARG USERNAME=bashocker
 
 RUN useradd -ms /bin/bash $USERNAME
 
@@ -10,33 +10,26 @@ FROM builder AS dev
 
 COPY dotfiles.copy .files
 
-RUN ./.files/install.sh
+RUN ./.files/install.sh ./
 
 USER $USERNAME
 
-RUN ./.files/stow.sh
+RUN ./.files/stow.sh ./
 
-USER root
-
-RUN ./.files/setup.sh && \
-    nvim --headless "+Lazy! sync" +qa
-
-USER $USERNAME
+RUN nvim --headless "+Lazy! sync" +qa
 
 FROM builder AS prod
 
-RUN apt-get update && \
-    apt-get install -y git
+ADD https://github.com/bashar-515/dotfiles/archive/refs/heads/main.tar.gz ./
 
-RUN ./.files/install.sh
+RUN mkdir ./.files && \
+    tar -xzf main.tar.gz --strip-components=1 -C .files && \
+    rm main.tar.gz
 
-USER $USERNAME
-
-RUN ./.files/stow.sh
-
-USER root
-
-RUN ./.files/setup.sh && \
-    nvim --headless "+Lazy! sync" +qa
+RUN ./.files/install.sh ./
 
 USER $USERNAME
+
+RUN ./.files/stow.sh ./
+
+RUN nvim --headless "+Lazy! sync" +qa
