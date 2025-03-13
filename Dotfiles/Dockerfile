@@ -2,7 +2,7 @@ FROM ubuntu:latest AS builder
 
 ARG USERNAME=bashocker
 
-RUN useradd -ms /bin/bash $USERNAME
+RUN useradd -ms /bin/bash ${USERNAME}
 
 WORKDIR /home/$USERNAME
 
