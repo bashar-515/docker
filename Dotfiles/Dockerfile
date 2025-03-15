@@ -20,11 +20,11 @@ RUN nvim --headless "+Lazy! sync" +qa
 
 FROM builder AS prod
 
-ADD https://github.com/bashar-515/dotfiles/archive/refs/heads/main.tar.gz ./
+RUN apt-get update && \
+    apt-get install -y \
+    git
 
-RUN mkdir ./.files && \
-    tar -xzf main.tar.gz --strip-components=1 -C .files && \
-    rm main.tar.gz
+RUN git clone --recursive https://github.com/bashar-515/dotfiles.git ./.files
 
 RUN ./.files/install.sh ./
 
