@@ -50,9 +50,19 @@ USER root
 RUN echo '. "${BASH_ENV}"' >> .bashrc
 USER $USERNAME
 
-# Download and install nvm
+# Download and install nvm and set Node version
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | PROFILE="${BASH_ENV}" bash
 RUN echo node > .nvmrc
 RUN nvm install 20
 ## end node
 ### end app dependencies
+
+USER root
+RUN wget -O /usr/local/bin/x264 https://artifacts.videolan.org/x264/release-debian-aarch64/x264-r3213-570f6c7 && \
+    chmod +x /usr/local/bin/x264
+USER $USERNAME
+
+USER root
+RUN wget -O /usr/local/bin/x264 https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-linux-aarch64 && \
+    chmod +x /usr/local/bin/x264
+USER $USERNAME
