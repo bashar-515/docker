@@ -18,12 +18,13 @@ RUN cat > ~/.viamdevrc <<-'EOS'
 USER root
 
 ### app dependencies
+RUN apt-get update && \
+    apt-get install -y jq 
 ## go
 ENV GO_VERSION=1.23.0
 ENV GOARCH=arm64
 
-RUN apt-get update && \
-    wget https://go.dev/dl/go${GO_VERSION}.linux-${GOARCH}.tar.gz && \
+RUN wget https://go.dev/dl/go${GO_VERSION}.linux-${GOARCH}.tar.gz && \
     tar -C /usr/local -xzf go${GO_VERSION}.linux-${GOARCH}.tar.gz && \
     rm go${GO_VERSION}.linux-${GOARCH}.tar.gz && \
     apt-get clean && \
@@ -55,7 +56,6 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | P
 RUN echo node > .nvmrc
 RUN nvm install 20
 ## end node
-### end app dependencies
 
 USER root
 RUN wget -O /usr/local/bin/x264 https://artifacts.videolan.org/x264/release-debian-aarch64/x264-r3213-570f6c7 && \
@@ -66,3 +66,22 @@ USER root
 RUN wget -O /usr/local/bin/x264 https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-linux-aarch64 && \
     chmod +x /usr/local/bin/x264
 USER $USERNAME
+
+USER root
+RUN apt-get update && apt-get install -y python3 python3-venv python3-pip
+RUN python3 -m venv /ve
+ENV PATH="/ve/bin:$PATH"
+RUN pip install 'tensorflow[and-cuda]'
+USER $USERNAME
+
+USER root
+RUN echo "source .viamdevrc" >> .bashrc
+USER $USERNAME
+
+USER root
+RUN git config --global url.ssh://git@github.com/viamrobotics/rdk.insteadOf https://github.com/viamrobotics/rdk && \
+	git config --global url.ssh://git@github.com/viamrobotics/api.insteadOf https://github.com/viamrobotics/api
+# RUN mkdir -p .ssh && \
+# 	grep -q github.com .ssh/known_hosts || ssh-keyscan -t rsa github.com >> .ssh/known_hosts
+USER $USERNAME
+### end app dependencies
