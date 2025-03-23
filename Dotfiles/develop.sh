@@ -15,4 +15,5 @@ fi
 
 cp -r "${DOTFILES_SRC_DIR}" "${DOTFILES_DEST_DIR}"
 
+source "${SCRIPT_DIR}/.env"
 docker compose -f "${SCRIPT_DIR}/docker-compose.yaml" run --build --rm main
